@@ -38,9 +38,7 @@ function SearchFlights() {
   };
 
   return (
-    <div
-      style={{ padding: "30px", fontFamily: "Arial", backgroundColor: "green" }}
-    >
+    <div style={{ padding: "30px", fontFamily: "Arial" }}>
       <h1>FlyMate AI - Search Flights</h1>
 
       <div style={{ marginBottom: "20px" }}>
@@ -52,7 +50,6 @@ function SearchFlights() {
           style={{
             padding: "10px",
             marginRight: "10px",
-            backgroundColor: "red",
           }}
         />
 
@@ -64,14 +61,10 @@ function SearchFlights() {
           style={{
             padding: "10px",
             marginRight: "10px",
-            backgroundColor: "yellow",
           }}
         />
 
-        <button
-          onClick={searchFlights}
-          style={{ padding: "10px", backgroundColor: "pink" }}
-        >
+        <button onClick={searchFlights} style={{ padding: "10px" }}>
           Search
         </button>
       </div>
@@ -87,7 +80,6 @@ function SearchFlights() {
               padding: "15px",
               marginBottom: "15px",
               borderRadius: "8px",
-              backgroundColor: "yellowgreen",
             }}
           >
             <h3>{flight.airline}</h3>
