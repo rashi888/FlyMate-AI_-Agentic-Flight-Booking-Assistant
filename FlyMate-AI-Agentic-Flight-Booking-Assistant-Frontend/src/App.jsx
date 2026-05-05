@@ -1,17 +1,17 @@
-import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SearchFlights from "./pages/SearchFlights";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
-    <div>
-      <SearchFlights />
-    </div>
-
-    // <div>
-    //   {/* <SearchFlights /> */}
-    //   hello33
-    //   <h1>Hell55o</h1>
-    // </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SearchFlights />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

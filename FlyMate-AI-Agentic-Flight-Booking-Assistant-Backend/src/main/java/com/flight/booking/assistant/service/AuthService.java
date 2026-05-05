@@ -5,7 +5,8 @@ import com.flight.booking.assistant.dto.LoginRequest;
 import com.flight.booking.assistant.dto.RegisterRequest;
 import com.flight.booking.assistant.entity.User;
 import com.flight.booking.assistant.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.flight.booking.assistant.security.JwtUtil;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,11 +15,13 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -36,12 +39,15 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
+        String token = jwtUtil.generateToken(savedUser.getEmail());
+
         return new AuthResponse(
                 "User registered successfully",
                 savedUser.getId(),
                 savedUser.getName(),
                 savedUser.getEmail(),
-                savedUser.getRole()
+                savedUser.getRole(),
+                token
         );
     }
 
@@ -50,18 +56,24 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
-        boolean passwordMatches = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        boolean isPasswordCorrect = passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword()
+        );
 
-        if (!passwordMatches) {
+        if (!isPasswordCorrect) {
             throw new RuntimeException("Invalid email or password");
         }
+
+        String token = jwtUtil.generateToken(user.getEmail());
 
         return new AuthResponse(
                 "Login successful",
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole()
+                user.getRole(),
+                token
         );
     }
 }

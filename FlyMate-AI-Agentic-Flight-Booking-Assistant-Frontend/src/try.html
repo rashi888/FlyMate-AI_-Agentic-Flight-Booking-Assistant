@@ -1,0 +1,175 @@
+ <TestStep id="_1zJH" name="Image processing">
+        <ProcedureCall id="_1zJ+"/>
+        <BasicSequence id="_+5e" name="set variables values">
+          <SetGlobalStep id="_1zI2" local="true" varname="surveyName">
+            <default>NKANGA_Training_Study</default>
+          </SetGlobalStep>
+          <SetGlobalStep id="_1zI3" local="true" varname="datasetName">
+            <default>MigratedStack</default>
+          </SetGlobalStep>
+          <SetGlobalStep id="_1zI5" local="true" varname="layerName">
+            <default>Spectre_REF</default>
+          </SetGlobalStep>
+          <SetGlobalStep id="_1zJP" local="true" varname="culturalName">
+            <default>TMP-QFTEST-20744</default>
+          </SetGlobalStep>
+          <SetGlobalStep id="_1zK3" local="true" varname="layerKind">
+            <default>Spectre</default>
+          </SetGlobalStep>
+          <SetGlobalStep id="_1zK4" local="true" varname="culturalKind">
+            <default>(SisGeoRef img)</default>
+          </SetGlobalStep>
+          <SetGlobalStep id="_2e3ca" local="true" varname="folderName">
+            <default>RGB composition</default>
+          </SetGlobalStep>
+        </BasicSequence>
+      </SetupSequence>
+      <TestStep id="_1zJH" name="Image processing">
+        <ProcedureCall id="_opU" local="true"
+                       procedure="local.initRGB_HSHCompositionMask">
+          <variable name="FRAME">$(currentBasemapFrame)</variable>
+          <variable name="cultural">$(culturalName)</variable>
+          <variable name="layerKind">$(layerKind)</variable>
+          <variable name="layer">$(layerName)</variable>
+          <variable name="property1"> 31 Hz : Module</variable>
+          <variable name="property2"> 39 Hz : Module</variable>
+          <variable name="property3"> 47 Hz : Module</variable>
+          <comment>Before:processes.imageProcessing.initRGB_HSHCompositionMask
+After:local.initRGB_HSHCompositionMask</comment>
+        </ProcedureCall>
+        <ProcedureCall id="_1o4v"
+                       procedure="viewers.treeSelection.selectCulturalGeneric">
+          <variable name="FRAME">$(currentBasemapFrame)</variable>
+          <variable name="NODE">/$(folderName)/$(culturalName)</variable>
+          <variable name="Kind">$(culturalKind)</variable>
+        </ProcedureCall>
+        <ProcedureCall id="_2e3bc" local="true"
+                       procedure="local.disableScaleBarOnPart5">
+          <variable name="FRAME">$(currentBasemapFrame)</variable>
+        </ProcedureCall>
+        <MouseEventStep clicks="1" client="$(client)"
+                        component="#Button:name=FishEyeBar.JButton.(viewer/reset)"
+                        event="MOUSE_MPRC" id="_2e3cY" modifiers="16">
+          <comment>Before:$(currentBasemapFrame).FishEyeBar.JButton.(viewer/reset)
+After:#Button:name=FishEyeBar.JButton.(viewer/reset)</comment>
+        </MouseEventStep>
+        <ProcedureCall id="_1zK0"
+                       procedure="viewers.util.checkViewerScreenshot">
+          <variable name="FRAME">$(currentBasemapFrame)</variable>
+          <variable name="screenshotName">Cultural</variable>
+        </ProcedureCall>
+      </TestStep>
+      <CleanupSequence id="_1zJC">
+        <ProcedureCall id="_1zK1"
+                       procedure="data.dataDelete.deleteCulturalGeneric">
+          <variable name="FRAME">$(currentBasemapFrame)</variable>
+          <variable name="NODE">/$(folderName)/$(culturalName)</variable>
+          <variable name="Kind">$(culturalKind)</variable>
+        </ProcedureCall>
+        <ProcedureCall id="_2Dn-s" procedure="util.clean&amp;close">
+          <variable name="FRAME">$(currentBasemapFrame)</variable>
+        </ProcedureCall>
+      </CleanupSequence>
+    </TestCase>
+  </TestSet>
+  <PackageRoot id="_3">
+    <Package id="_2BAr" name="local">
+      <Procedure id="_20Ge" name="selectLayerPropertyMultiBM">
+        <variable name="FRAME"/>
+        <variable name="Kind"/>
+        <variable name="Name"/>
+        <variable name="Property">$(Kind)</variable>
+        <ProcedureCall id="_20Gi"
+                       procedure="viewers.treeSelection.selectLayerPropertyTree">
+          <variable name="FRAME">$(FRAME)</variable>
+          <variable name="Tree">tree.DataTreeViewer(Layer)</variable>
+          <variable name="Kind">$(Kind)</variable>
+          <variable name="Name">$(Name)</variable>
+          <variable name="Property">$(Property)</variable>
+        </ProcedureCall>
+      </Procedure>
+      <Procedure id="_2e3bU" name="disableScaleBarOnPart5">
+        <variable name="FRAME">where apply the disable scale bar</variable>
+        <ProcedureCall id="_vSn" local="true"
+                       procedure="Viewer.viewerParam.basemap.setScalebarSettings">
+          <variable name="viewer">$(FRAME)</variable>
+          <variable name="option">Current view</variable>
+          <variable name="showScalebar">${as:boolean:false}</variable>
+          <variable name="location">Bottom Left</variable>
+          <variable name="horizontalDistance">${as:integer:30}</variable>
+          <variable name="verticalDistance">${as:integer:30}</variable>
+          <variable name="symbolColor">#FFFF00</variable>
+          <variable name="symbolOpacity">${as:integer:100}</variable>
+          <variable name="maxSize">${as:integer:188}</variable>
+          <variable name="showSecondaryScalebar">${as:boolean:false}</variable>
+          <variable name="secondaryUnit">ft</variable>
+        </ProcedureCall>
+      </Procedure>
+      <Procedure id="_2dvbz" name="selectLayerProperty" predelay="100">
+        <variable name="Frame"/>
+        <variable name="layerKind"/>
+        <variable name="layerName"/>
+        <variable name="property"/>
+        <variable name="screenshot"/>
+        <RepeatSequence count="6" id="_2dvb-" var="layerNumber">
+          <ProcedureCall id="_2dvc0"
+                         procedure="viewers.treeSelection.selectLayerProperty">
+            <variable name="FRAME">$(Frame)</variable>
+            <variable name="Kind">$(layerKind)</variable>
+            <variable name="Name">$(layerName)</variable>
+            <variable name="Property">$(property)/$(property) on Layer $[$(layerNumber) + 1]</variable>
+          </ProcedureCall>
+        </RepeatSequence>
+        <ProcedureCall id="_2dvci"
+                       procedure="viewers.util.checkViewerScreenshot">
+          <variable name="FRAME">$(Frame)</variable>
+          <variable name="screenshotName">$(screenshot)</variable>
+        </ProcedureCall>
+        <RepeatSequence count="6" id="_2dvdD" var="layerNumber">
+          <ProcedureCall id="_2dvdF"
+                         procedure="viewers.treeSelection.unselectLayerProperty">
+            <variable name="FRAME">$(Frame)</variable>
+            <variable name="Kind">$(layerKind)</variable>
+            <variable name="Name">$(layerName)</variable>
+            <variable name="Property">$(property)/$(property) on Layer $[$(layerNumber) + 1]</variable>
+          </ProcedureCall>
+        </RepeatSequence>
+      </Procedure>
+      <Procedure id="_2dvdk" name="selectProperty" predelay="100">
+        <variable name="pptyName"/>
+        <variable name="comp"/>
+        <MouseEventStep clicks="1" client="$(client)"
+                        component="$(currentMultiBasemapFrame).smgPlot.canvasBaseMap_$(comp)"
+                        event="MOUSE_MPRC" id="_2dvdr" modifiers="16"/>
+        <ProcedureCall id="_2dvds"
+                       procedure="local.selectLayerPropertyMultiBM">
+          <variable name="FRAME">$(currentMultiBasemapFrame)</variable>
+          <variable name="Kind">$(layerKind)</variable>
+          <variable name="Name">$(layerName)</variable>
+          <variable name="Property">$(pptyName)</variable>
+        </ProcedureCall>
+        <ProcedureCall id="_2dvdt"
+                       procedure="viewers.genericFrame.basemap.resetPropertyDynamicOnSelected">
+          <variable name="FRAME">$(currentMultiBasemapFrame)</variable>
+        </ProcedureCall>
+      </Procedure>
+      <Procedure id="_1zAs" name="initLayerAnimation">
+        <variable name="FRAME"/>
+        <variable name="layerKind"/>
+        <variable name="layerName"/>
+        <ProcedureCall id="_1zB0"
+                       procedure="viewers.treeDisplay.setCurrentDataTreeToLayers">
+          <variable name="frame">$(FRAME)</variable>
+        </ProcedureCall>
+        <ProcedureCall id="_1zAu" procedure="_inner.menuItemOnNode">
+          <variable name="FRAME">$(FRAME)</variable>
+          <variable name="NODE">#Tree:name=tree.DataTreeViewer(Layer)@/Layer/Layers/$(layerKind)/$(layerName)</variable>
+          <variable name="menuItem">menuItemLayer_Animation</variable>
+          <comment>$(FRAME).tree.DataTreeViewer(Layer)@/Layer/Layers/$(layerKind)/$(layerName)</comment>
+        </ProcedureCall>
+        <ComponentWaiter client="$(client)"
+                         component="#Dialog:name=LayerAnimationDialog"
+                         id="_1zB2">
+          <comment>LayerAnimationDialog </comment>
+        </ComponentWaiter>
+      </Procedure>
